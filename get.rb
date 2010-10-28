@@ -23,10 +23,12 @@ urls.each do |title, url|
     comics << "<div id='#{title}'>"
     comics << images.flatten.collect do |i|
       if i.to_s =~ /http:\/\//
-        i.to_s
+        image = i.to_s
       else
-        i.to_s.gsub(/src=[\"|\']/){|m| "#{m}#{url}/"}.gsub("#{url}#{url}", url).gsub("#{url}//", "#{url}/")
+        image = i.to_s.gsub(/src=[\"|\']/){|m| "#{m}#{url}/"}.gsub("#{url}#{url}", url).gsub("#{url}//", "#{url}/")
       end
+
+      "#{image}<br/>"
     end
     comics << "</div>"
   rescue
@@ -35,11 +37,15 @@ urls.each do |title, url|
 end
 dir = File.dirname(__FILE__)
 File.delete(File.join(dir, "latest.html")) if File.exists?(File.join(dir, "latest.html"))
-titles = urls.collect{|t,u| "<a href='##{t}'>#{t}</a>"}
-File.open(File.join(dir, "latest.html"), "w").puts(
-  "<html><head><link rel='stylesheet' href='ui.css'/><script src='jquery-min.js'></script><script src='jquery-ui-custom-min.js'></script>
-   <script>$(document).ready(function(){$('#tabs').tabs({tabTemplate: '<li><a href=\"\#{href}\">\#{label}</a></li>'})});</script>
-   </head><body><div id='tabs'>\n<ul id='nav'><li>#{titles.join('</li><li>')}</li></ul>#{comics.flatten.join("\n")}\n</div></body></html>"
-) unless comics.empty?
+unless comics.empty?
+  titles = urls.collect{|t,u| "<a href='##{t}'>#{t}</a>"}
+  File.open(File.join(dir, "latest.html"), "w").puts(
+    "<html><head><link rel='stylesheet' href='ui.css'/><script src='jquery-min.js'></script><script src='jquery-ui-custom-min.js'></script>
+     <script>$(document).ready(function(){$('#tabs').tabs({tabTemplate: '<li><a href=\"\#{href}\">\#{label}</a></li>'})});</script>
+     </head><body><div id='tabs'>\n<ul id='nav' class='clearfix'><li>#{titles.join('</li><li>')}</li></ul><br/>#{comics.flatten.join("\n")}\n</div></body></html>"
+  )
 
-`open #{File.join(dir, "latest.html")}`
+  `open #{File.join(dir, "latest.html")}`
+else
+  $stdout.puts "Nothing found, sorry."
+end
