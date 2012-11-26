@@ -5,12 +5,13 @@ require 'hpricot'
 require 'fileutils'
 require 'pathname'
 require 'yaml'
+require 'peach'
 
 comics = []
 unless (config_file = Pathname.new(File.expand_path('../config.yml', __FILE__))).exist?
   FileUtils::cp "#{config_file}.example", config_file.to_s
 end
-(urls = YAML::load(config_file.read)['urls']).each do |c|
+(urls = YAML::load(config_file.read)['urls']).peach do |c|
  begin
     uri = ::URI.parse((url = c['url']))
     resp = ::Net::HTTP.get_response(uri)
