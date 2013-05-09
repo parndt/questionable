@@ -4,7 +4,7 @@ require 'fileutils'
 require 'pathname'
 require 'yaml'
 require 'celluloid'
-require 'erb'
+require 'haml'
 
 require 'questionable/fetcher'
 require 'questionable/comic'

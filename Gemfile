@@ -4,3 +4,4 @@ gemspec
 
 gem "hpricot"
 gem "celluloid"
+gem "haml"

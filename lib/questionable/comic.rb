@@ -32,5 +32,13 @@ module Questionable
     rescue
       puts "can't get #{@url}: #{$!.inspect}"
     end
+
+    def haml_object_ref
+      "comic"
+    end
+
+    def id
+      @title
+    end
   end
 end
