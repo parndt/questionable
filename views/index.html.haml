@@ -6,14 +6,15 @@
     %script{src: 'jquery-ui-custom-min.js'}
     :javascript
       $(document).ready(function(){
-        $('#tabs').tabs({tabTemplate: '<li><a href=\"\#{href}\">\#{label}</a></li>'})
+        $('#tabs').tabs();
       });
   %body
     #tabs
       %ul#nav.clearfix
         - comics.collect do |comic|
           %li
-            %a{href: "##{comic.haml_object_ref}_#{comic.title}"}= comic.title
+            %a{href: "##{comic.haml_object_ref}_#{comic.title}"}
+              %span= comic.title
       %br
       - comics.map do |comic|
         %div[comic]= comic.images.flatten.join('<br/>')
