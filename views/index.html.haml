@@ -18,6 +18,6 @@
       %br
       - comics.map do |comic|
         %div[comic]
-          - comic.images.flatten.each do |image|
+          - comic.images.each do |image|
             = image
             %br
