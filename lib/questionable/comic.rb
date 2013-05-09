@@ -5,20 +5,16 @@ module Questionable
     def initialize(title, url)
       @title = title
       @url = url
-      @condition = Condition.new
-
-      async.fetch
+      @future = future.fetch
     end
     attr_reader :title, :url
 
     def images
-      return @images if @images
-      @condition.wait
+      @future.value
     end
 
     def fetch
-      @images = parse(page)
-      @condition.broadcast @images
+      parse(page)
     end
 
     def parse(html)
