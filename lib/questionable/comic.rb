@@ -1,5 +1,7 @@
 module Questionable
   class Comic
+    include Celluloid
+
     def initialize(title, url)
       @title = title
       @url = url

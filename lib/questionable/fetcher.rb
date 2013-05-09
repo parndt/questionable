@@ -13,7 +13,10 @@ module Questionable
       comics = YAML::load(@config_filename.read)['urls'].map do |h|
         Comic.new(h['title'], h['url'])
       end
-      comics.pmap(&:fetch)
+      futures = comics.map do |comic|
+        comic.future(:fetch)
+      end
+      futures.each(&:value)
       @output_filename.delete if @output_filename.exist?
       unless comics.empty?
         titles = comics.collect{|comic| "<a href='##{comic.title}'>#{comic.title}</a>"}

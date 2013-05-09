@@ -3,7 +3,7 @@ require 'hpricot'
 require 'fileutils'
 require 'pathname'
 require 'yaml'
-require 'peach'
+require 'celluloid'
 
 require 'questionable/fetcher'
 require 'questionable/comic'
