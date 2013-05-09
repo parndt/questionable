@@ -22,32 +22,7 @@ module Questionable
       comics = YAML::load(@config_filename.read)['urls'].map do |h|
         Comic.new(h['title'], h['url'])
       end
-      comics.peach do |comic|
-        begin
-          uri = ::URI.parse(comic.url)
-          resp = ::Net::HTTP.get_response(uri)
-          if resp.class.name == "Net::HTTPFound" && resp.inspect =~ /302/
-            resp = ::Net::HTTP.get_response(URI.parse("#{comic.url.gsub('/comics/', resp['location'])}"))
-          end
-          html = Hpricot(resp.body)
-          images = html.search("//img[@src*=comics/]")
-          images << html.search("//img[@src*=#{Time.now.year}/#{comic.url.split('//')[1].split('.').first}]")
-          images << html.search("//img[@src*=db/files/Comics/]")
-
-          images = images.sort_by { |i, j| i.to_s <=> j.to_s } if images.size > 1
-          comic.images = images.flatten.collect do |i|
-            if (image = i.to_s) !~ /http:\/\//
-              image = image.gsub(/src=[\"|\']/){|m| "#{m}#{comic.url}/"}.
-                            gsub("#{comic.url}#{comic.url}", comic.url).
-                            gsub("#{comic.url}//", "#{comic.url}/")
-            end
-
-            image
-          end
-        rescue
-          puts "can't get #{comic.url}: #{$!.inspect}"
-        end
-      end
+      comics.pmap(&:fetch)
       @output_filename.delete if @output_filename.exist?
       unless comics.empty?
         titles = comics.collect{|comic| "<a href='##{comic.title}'>#{comic.title}</a>"}
