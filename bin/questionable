@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+
+require 'questionable'
+
+config_filename = Pathname.new(File.expand_path('../../config.yml', __FILE__))
+output_filename = Pathname.new(File.expand_path('../../latest.html', __FILE__))
+Questionable.fetch(config_filename, output_filename)
