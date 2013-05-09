@@ -1,3 +1,10 @@
+require 'net/http'
+require 'hpricot'
+require 'fileutils'
+require 'pathname'
+require 'yaml'
+require 'peach'
+
 require 'questionable/fetcher'
 require 'questionable/comic'
 

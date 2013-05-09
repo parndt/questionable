@@ -1,12 +1,3 @@
-#!/usr/bin/env ruby
-require 'net/http'
-require 'rubygems'
-require 'hpricot'
-require 'fileutils'
-require 'pathname'
-require 'yaml'
-require 'peach'
-
 module Questionable
   class Fetcher
     def initialize(config_filename, output_filename)
