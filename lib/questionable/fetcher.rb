@@ -19,33 +19,9 @@ module Questionable
       futures.each(&:value)
       @output_filename.delete if @output_filename.exist?
       unless comics.empty?
-        titles = comics.collect{|comic| "<a href='##{comic.title}'>#{comic.title}</a>"}
-        @output_filename.open("w").puts <<-ENDHTML
-<html>
-  <head>
-    <link rel='stylesheet' href='ui.css'/>
-    <script src='jquery-min.js'></script>
-    <script src='jquery-ui-custom-min.js'></script>
-    <script>
-      $(document).ready(function(){
-        $('#tabs').tabs({tabTemplate: '<li><a href=\"\#{href}\">\#{label}</a></li>'})
-      });
-    </script>
-  </head>
-  <body>
-    <div id='tabs'>\n
-      <ul id='nav' class='clearfix'>
-        <li>#{titles.join('</li><li>')}</li>
-      </ul>
-      <br/>
-      #{comics.map { |comic|
-          "<div id='#{comic.title}'>#{comic.images.flatten.join('<br/>')}</div>"
-        }.join("\n")
-      }\n
-    </div>
-  </body>
-</html>
-        ENDHTML
+        template = ERB.new(File.read(File.expand_path("../../../views/index.html.erb", __FILE__)), nil, "-")
+
+        @output_filename.open("w").puts template.result(binding)
 
         `open #{@output_filename}`
       else
