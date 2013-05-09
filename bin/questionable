@@ -1,6 +1,11 @@
 #!/usr/bin/env ruby
 
-require 'questionable'
+begin
+  require 'questionable'
+rescue LoadError
+  $:.push File.expand_path('../../lib', __FILE__)
+  require 'questionable'
+end
 
 config_filename = Pathname.new(File.expand_path('../../config.yml', __FILE__))
 output_filename = Pathname.new(File.expand_path('../../latest.html', __FILE__))
