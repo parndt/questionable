@@ -11,19 +11,23 @@ module Questionable
     end
     attr_reader :title, :url
 
+    def images
+      return @images if @images
+      @condition.wait
+    end
+
     def fetch
-      uri = URI.parse(@url)
-      resp = Net::HTTP.get_response(uri)
-      if resp.class.name == "Net::HTTPFound" && resp.inspect =~ /302/
-        resp = Net::HTTP.get_response(URI.parse("#{@url.gsub('/comics/', resp['location'])}"))
-      end
-      html = Hpricot(resp.body)
+      @images = parse(page)
+      @condition.broadcast @images
+    end
+
+    def parse(html)
       images = html.search("//img[@src*=comics/]")
       images << html.search("//img[@src*=#{Time.now.year}/#{@url.split('//')[1].split('.').first}]")
       images << html.search("//img[@src*=db/files/Comics/]")
 
       images = images.sort_by { |i, j| i.to_s <=> j.to_s } if images.size > 1
-      @images = images.flatten.map do |i|
+      images.flatten.map do |i|
         if (image = i.to_s) !~ /http:\/\//
           image = image.gsub(/src=[\"|\']/){|m| "#{m}#{@url}/"}.
                         gsub("#{@url}#{@url}", @url).
@@ -32,14 +36,15 @@ module Questionable
 
         image
       end
-      @condition.broadcast @images
-    rescue
-      puts "can't get #{@url}: #{$!.inspect}"
     end
 
-    def images
-      return @images if @images
-      @condition.wait
+    def page
+      uri = URI.parse(@url)
+      resp = Net::HTTP.get_response(uri)
+      if resp.class.name == "Net::HTTPFound" && resp.inspect =~ /302/
+        resp = Net::HTTP.get_response(URI.parse("#{@url.gsub('/comics/', resp['location'])}"))
+      end
+      Hpricot(resp.body)
     end
 
     def haml_object_ref
