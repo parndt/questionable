@@ -27,15 +27,8 @@ module Questionable
     end
 
     def fetch_comics
-      futures = YAML.load(@config_filename.read)['urls'].map do |h|
-        future(:build_comic, h['title'], h['url'])
-      end
-      futures.map(&:value)
-    end
-
-    def build_comic(title, url)
-      Comic.new(title, url).tap do |comic|
-        comic.fetch
+      YAML.load(@config_filename.read)['urls'].map do |h|
+        Comic.new(h['title'], h['url'])
       end
     end
   end

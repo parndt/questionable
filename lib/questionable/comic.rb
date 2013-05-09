@@ -5,8 +5,11 @@ module Questionable
     def initialize(title, url)
       @title = title
       @url = url
+      @condition = Condition.new
+
+      async.fetch
     end
-    attr_reader :title, :url, :images
+    attr_reader :title, :url
 
     def fetch
       uri = URI.parse(@url)
@@ -29,8 +32,14 @@ module Questionable
 
         image
       end
+      @condition.broadcast @images
     rescue
       puts "can't get #{@url}: #{$!.inspect}"
+    end
+
+    def images
+      return @images if @images
+      @condition.wait
     end
 
     def haml_object_ref
