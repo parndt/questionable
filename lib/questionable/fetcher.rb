@@ -9,7 +9,7 @@ module Questionable
 
     def run
       unless @config_filename.exist?
-        FileUtils::cp "#{@config_filename}.example", @config_filename.to_s
+        FileUtils.cp "#{@config_filename}.example", @config_filename.to_s
       end
       @output_filename.delete if @output_filename.exist?
       @comics = fetch_comics
@@ -27,7 +27,7 @@ module Questionable
     end
 
     def fetch_comics
-      futures = YAML::load(@config_filename.read)['urls'].map do |h|
+      futures = YAML.load(@config_filename.read)['urls'].map do |h|
         future(:build_comic, h['title'], h['url'])
       end
       futures.map(&:value)

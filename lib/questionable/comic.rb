@@ -9,10 +9,10 @@ module Questionable
     attr_reader :title, :url, :images
 
     def fetch
-      uri = ::URI.parse(@url)
-      resp = ::Net::HTTP.get_response(uri)
+      uri = URI.parse(@url)
+      resp = Net::HTTP.get_response(uri)
       if resp.class.name == "Net::HTTPFound" && resp.inspect =~ /302/
-        resp = ::Net::HTTP.get_response(URI.parse("#{@url.gsub('/comics/', resp['location'])}"))
+        resp = Net::HTTP.get_response(URI.parse("#{@url.gsub('/comics/', resp['location'])}"))
       end
       html = Hpricot(resp.body)
       images = html.search("//img[@src*=comics/]")
