@@ -19,38 +19,38 @@ module Questionable
       unless @config_filename.exist?
         FileUtils::cp "#{@config_filename}.example", @config_filename.to_s
       end
-      sites = YAML::load(@config_filename.read)['urls'].map do |h|
-        Site.new(h['title'], h['url'])
+      comics = YAML::load(@config_filename.read)['urls'].map do |h|
+        Comic.new(h['title'], h['url'])
       end
-      sites.peach do |site|
+      comics.peach do |comic|
         begin
-          uri = ::URI.parse(site.url)
+          uri = ::URI.parse(comic.url)
           resp = ::Net::HTTP.get_response(uri)
           if resp.class.name == "Net::HTTPFound" && resp.inspect =~ /302/
-            resp = ::Net::HTTP.get_response(URI.parse("#{site.url.gsub('/comics/', resp['location'])}"))
+            resp = ::Net::HTTP.get_response(URI.parse("#{comic.url.gsub('/comics/', resp['location'])}"))
           end
           html = Hpricot(resp.body)
           images = html.search("//img[@src*=comics/]")
-          images << html.search("//img[@src*=#{Time.now.year}/#{site.url.split('//')[1].split('.').first}]")
+          images << html.search("//img[@src*=#{Time.now.year}/#{comic.url.split('//')[1].split('.').first}]")
           images << html.search("//img[@src*=db/files/Comics/]")
 
           images = images.sort_by { |i, j| i.to_s <=> j.to_s } if images.size > 1
-          comics[site.title] = images.flatten.collect do |i|
+          comic.images = images.flatten.collect do |i|
             if (image = i.to_s) !~ /http:\/\//
-              image = image.gsub(/src=[\"|\']/){|m| "#{m}#{site.url}/"}.
-                            gsub("#{site.url}#{site.url}", site.url).
-                            gsub("#{site.url}//", "#{site.url}/")
+              image = image.gsub(/src=[\"|\']/){|m| "#{m}#{comic.url}/"}.
+                            gsub("#{comic.url}#{comic.url}", comic.url).
+                            gsub("#{comic.url}//", "#{comic.url}/")
             end
 
             image
           end
         rescue
-          puts "can't get #{site.url}: #{$!.inspect}"
+          puts "can't get #{comic.url}: #{$!.inspect}"
         end
       end
       @output_filename.delete if @output_filename.exist?
       unless comics.empty?
-        titles = sites.collect{|site| "<a href='##{site.title}'>#{site.title}</a>"}
+        titles = comics.collect{|comic| "<a href='##{comic.title}'>#{comic.title}</a>"}
         @output_filename.open("w").puts <<-ENDHTML
 <html>
   <head>
@@ -69,8 +69,8 @@ module Questionable
         <li>#{titles.join('</li><li>')}</li>
       </ul>
       <br/>
-      #{sites.map { |site|
-          "<div id='#{site.title}'>#{comics[site.title].flatten.join('<br/>')}</div>"
+      #{comics.map { |comic|
+          "<div id='#{comic.title}'>#{comic.images.flatten.join('<br/>')}</div>"
         }.join("\n")
       }\n
     </div>

@@ -1,5 +1,5 @@
 require 'questionable/fetcher'
-require 'questionable/site'
+require 'questionable/comic'
 
 module Questionable
   def self.fetch(config_filename, output_filename)
