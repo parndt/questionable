@@ -17,4 +17,7 @@
               %span= comic.title
       %br
       - comics.map do |comic|
-        %div[comic]= comic.images.flatten.join('<br/>')
+        %div[comic]
+          - comic.images.flatten.each do |image|
+            = image
+            %br
