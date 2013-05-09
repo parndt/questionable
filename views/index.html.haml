@@ -11,7 +11,7 @@
   %body
     #tabs
       %ul#nav.clearfix
-        - comics.collect do |comic|
+        - comics.map do |comic|
           %li
             %a{href: "##{comic.haml_object_ref}_#{comic.title}"}
               %span= comic.title
