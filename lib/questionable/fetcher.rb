@@ -19,10 +19,8 @@ module Questionable
       futures.each(&:value)
       @output_filename.delete if @output_filename.exist?
       unless comics.empty?
-        options = {
-          format: :html5
-        }
-        engine = Haml::Engine.new(File.read(File.expand_path("../../../views/index.html.haml", __FILE__)), options)
+        template = File.read(File.expand_path("../../../views/index.html.haml", __FILE__))
+        engine = Haml::Engine.new(template, format: :html5)
 
         @output_filename.open("w").puts engine.render(nil, comics: comics)
 
