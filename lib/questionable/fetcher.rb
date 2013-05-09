@@ -12,13 +12,12 @@ module Questionable
         FileUtils.cp "#{@config_filename}.example", @config_filename.to_s
       end
       @output_filename.delete if @output_filename.exist?
-      @comics = fetch_comics
 
-      unless @comics.empty?
+      unless comics.empty?
         template = File.read(File.expand_path("../../../views/index.html.haml", __FILE__))
         engine = Haml::Engine.new(template, format: :html5)
 
-        @output_filename.open("w").puts engine.render(nil, comics: @comics)
+        @output_filename.open("w").puts engine.render(self)
 
         `open #{@output_filename}`
       else
@@ -26,8 +25,8 @@ module Questionable
       end
     end
 
-    def fetch_comics
-      YAML.load(@config_filename.read)['urls'].map do |h|
+    def comics
+      @comics ||= YAML.load(@config_filename.read)['urls'].map do |h|
         Comic.new(h['title'], h['url'])
       end
     end
