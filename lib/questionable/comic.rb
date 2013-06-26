@@ -21,6 +21,7 @@ module Questionable
       images = html.search("//img[@src*=comics/]")
       images << html.search("//img[@src*=#{Time.now.year}/#{@url.split('//')[1].split('.').first}]")
       images << html.search("//img[@src*=db/files/Comics/]")
+      images << html.search('#comic > img')
 
       images = images.sort_by { |i, j| i.to_s <=> j.to_s } if images.size > 1
       images.flatten.map do |i|
