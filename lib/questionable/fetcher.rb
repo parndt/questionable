@@ -19,6 +19,8 @@ module Questionable
 
         @output_filename.open("w").puts engine.render(self)
 
+        sleep 0.1
+
         `open #{@output_filename}`
       else
         $stdout.puts "Nothing found, sorry."
