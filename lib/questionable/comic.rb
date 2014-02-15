@@ -23,9 +23,8 @@ module Questionable
       images << html.search("//img[@src*=db/files/Comics/]")
       images << html.search('#comic > img')
 
-      images = images.sort_by { |i, j| i.to_s <=> j.to_s } if images.size > 1
-      images.flatten.uniq.map do |i|
-        if (image = i.to_s) !~ /http:\/\//
+      images.flatten.uniq.map(&:to_s).reject{|i| i =~ /(facebook|twitter).gif/}.map do |image|
+        if image !~ /http:\/\//
           image = image.gsub(/src=[\"|\']/){|m| "#{m}#{@url}/"}.
                         gsub("#{@url}#{@url}", @url).
                         gsub("#{@url}//", "#{@url}/")
