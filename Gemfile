@@ -5,3 +5,4 @@ gemspec
 gem "hpricot"
 gem "celluloid"
 gem "haml"
+gem "pry"

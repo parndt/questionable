@@ -2,3 +2,4 @@ latest.html
 config.yml
 Gemfile.lock
 .bundle
+.last_run.yml

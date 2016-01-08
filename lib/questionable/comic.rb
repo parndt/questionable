@@ -27,7 +27,7 @@ module Questionable
         next if image[:src] =~ /(facebook|twitter).gif/
 
         if image[:src] !~ %r{\A(http:)?//}
-          image[:src] = "#{@url}#{image[:src]}".gsub('///', '//').
+          image[:src] = [@url, image[:src]].join("/").gsub('///', '//').
                         gsub("#{@url}#{@url}", @url).
                         gsub("#{@url}//", "#{@url}/")
         end

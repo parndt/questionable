@@ -11,12 +11,12 @@
   %body
     #tabs
       %ul#nav.clearfix
-        - comics.map do |comic|
+        - new_comics.map do |comic|
           %li
             %a{href: "##{comic.haml_object_ref}_#{comic.title}"}
               %span= comic.title
       %br
-      - comics.map do |comic|
+      - new_comics.map do |comic|
         %div[comic]
           - comic.images.each do |image|
             = image
