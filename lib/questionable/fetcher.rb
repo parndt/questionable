@@ -30,7 +30,7 @@ module Questionable
 
         `open -a Safari.app #{@output_filename}`
       else
-        $stdout.puts "❌  Nothing new found, sorry."
+        $stdout.puts "✅  Up to date, hooray!"
       end
     end
 

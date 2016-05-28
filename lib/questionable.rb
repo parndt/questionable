@@ -3,7 +3,7 @@ require 'hpricot'
 require 'fileutils'
 require 'pathname'
 require 'yaml'
-require 'celluloid'
+require 'celluloid/current'
 require 'haml'
 
 require 'questionable/fetcher'
