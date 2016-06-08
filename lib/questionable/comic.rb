@@ -23,7 +23,7 @@ module Questionable
       images << html.search("//img[@src*=/comics/]")
       images << html.search('#comic > img')
 
-      images.flatten.uniq.map do |image|
+      images.flatten.uniq{|i| i[:src]}.map do |image|
         next if image[:src] =~ /(facebook|twitter).gif/
 
         if image[:src] !~ %r{\A(http:)?//}
