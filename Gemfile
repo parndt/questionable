@@ -2,7 +2,7 @@ source "https://rubygems.org"
 
 gemspec
 
-gem "hpricot"
-gem "celluloid"
-gem "haml"
-gem "pry"
+gem "hpricot", require: false
+gem "celluloid", require: false
+gem "haml", require: false
+gem "pry", require: false
