@@ -26,14 +26,16 @@ module Questionable
       images.flatten.uniq{|i| i[:src]}.map do |image|
         next if image[:src] =~ /(facebook|twitter).gif/
 
-        if image[:src] !~ %r{\A(http:)?//}
-          image[:src] = [@url, image[:src]].join("/").gsub('///', '//').
-                        gsub("#{@url}#{@url}", @url).
-                        gsub("#{@url}//", "#{@url}/")
-        end
+        [:src, :srcset].each do |attr|
+          if image[attr] && image[attr] !~ %r{\A(http:)?//}
+            image[attr] = [@url, image[attr]].join("/").gsub('///', '//').
+                          gsub("#{@url}#{@url}", @url).
+                          gsub("#{@url}//", "#{@url}/")
+          end
 
-        # ensure // links are http:// instead.
-        image[:src] = image[:src].gsub(%r{\A//}, 'http://')
+          # ensure // links are http:// instead.
+          image[attr] = image[attr].gsub(%r{\A//}, 'http://') if image[attr]
+        end
 
         image
       end.compact
